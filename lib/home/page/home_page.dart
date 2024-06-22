@@ -124,7 +124,7 @@ class _HomepageState extends State<Homepage> {
             itemBuilder: (BuildContext context, int index) {
               return   GestureDetector (
                 onTap: () {
-                  Navigator.of(context).pushNamed('/profile',
+                  Navigator.of(context).pushNamed( '/profile',
                     arguments: users[index],
                   );
                 },
