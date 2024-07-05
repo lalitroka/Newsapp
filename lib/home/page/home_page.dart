@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:practise/home/model/admindata.dart';
-import 'package:practise/home/model/dataofuser.dart';
 import 'package:practise/home/widgets/homepage_widget.dart';
+import 'package:practise/api/modeldata.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -11,14 +12,16 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-    @override
+  @override
   void initState() {
     super.initState();
+    fetchNews();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const Drawerclass(),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -76,11 +79,9 @@ class _HomepageState extends State<Homepage> {
             ],
           ),
         ),
-
-
         const SizedBox(height: 1),
         Padding(
-          padding: const EdgeInsets.only(top:0, left: 10 ),
+          padding: const EdgeInsets.only(top: 0, left: 10),
           child: Row(
             children: [
               Flexible(
@@ -98,7 +99,7 @@ class _HomepageState extends State<Homepage> {
                           height: 30,
                           width: 100,
                           color: Colors.yellow,
-                          child:  Center(
+                          child: Center(
                             child: Text(title.buttonText),
                           ),
                         ),
@@ -116,42 +117,84 @@ class _HomepageState extends State<Homepage> {
             ],
           ),
         ),
-
-      const  SizedBox( height: 2,),
+        const SizedBox(
+          height: 2,
+        ),
         Flexible(
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              return   GestureDetector (
-                onTap: () {
-                  Navigator.of(context).pushNamed( '/profile',
-                    arguments: users[index],
-                  );
-                },
-                child: CoverImage(
-                    title: Text(users[index].title),
-                    bodytitle: Text(
-                      users[index].bodytitle,
-                      maxLines: 2,
-                    ),
-                    subtitle: Text(users[index].subtitle),
-                    smallImage:
-                        Image(image: AssetImage(users[index].smallImage)),
-                  
-                    assetImage:
-                        Image(image: AssetImage(users[index].assetImage)),
-                    icons: const Icon(Icons.abc)),
-              );
-            },
-            itemCount: users.length,
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider(height: 1);
+          child: FutureBuilder<List<Articles>?>(
+            future: fetchNews(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final articledata = snapshot.data?[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushReplacementNamed(
+                          '/profile',
+                          arguments: articledata,
+                        );
+                      },
+                      child: CoverImage(
+                        title: Text(articledata?.author ?? 'Mac  roy'),
+                        bodytitle: Text(
+                          articledata?.description ??
+                              ' the description is not available',
+                          maxLines: 2,
+                        ),
+                        subtitle: Text(
+                            articledata?.title ?? 'subtitle is not available'),
+
+                        smallImage: CachedNetworkImage(
+                          imageUrl: '${articledata?.urlToImage}',
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
+                          errorWidget: (context, url, error) {
+                            articledata?.urlToImage = 'images/army.png';
+                            return const Image(
+                                image: AssetImage('images/army.png'));
+                          },
+                        ),
+
+                        //  Image.network(
+                        //     ("${snapshot.data?[index].urlToImage ?? const Image(image: AssetImage('images.army.png'))} ")),
+
+                        assetImage: CachedNetworkImage(
+                          imageUrl: '${articledata?.urlToImage}',
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) =>
+                                  CircularProgressIndicator(
+                                      value: downloadProgress.progress),
+                          errorWidget: (context, url, error) {
+                            articledata?.urlToImage = 'images/jungle.png';
+                            return const Image(
+                                image: AssetImage('images/jungle.png'));
+                          },
+                        ),
+
+                        //  Image.network(
+                        //           ("${snapshot.data?[index].urlToImage ??  const Image(image: AssetImage('images.army.png')) } ")),
+
+                        icons: const Icon(Icons.abc),
+                      ),
+                    );
+                  },
+                );
+              }
             },
           ),
         ),
-      const  Padding(
-          padding:  EdgeInsets.only(left: 10, right: 10),
-          child:  Row(
+        const Padding(
+          padding: EdgeInsets.only(left: 10, right: 10),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Column(children: [
@@ -172,6 +215,66 @@ class _HomepageState extends State<Homepage> {
               ]),
             ],
           ),
+        ),
+      ]),
+    );
+  }
+}
+
+class Drawerclass extends StatefulWidget {
+  const Drawerclass({
+    super.key,
+  });
+
+  @override
+  State<Drawerclass> createState() => _DrawerclassState();
+}
+
+class _DrawerclassState extends State<Drawerclass> {
+  @override
+  Widget build(BuildContext context) {
+    final  String userName =
+        ModalRoute.of(context)!.settings.arguments as String;
+    return Drawer(
+      width: 200,
+      child: ListView(padding: EdgeInsets.zero, children: [
+        DrawerHeader(
+          
+            decoration: const BoxDecoration(
+              color: Colors.blueAccent,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundImage: AssetImage('images/army.png'),
+                ),
+                const SizedBox(height: 2),
+                Text(userName),
+                Text(userName),
+              ],
+            )),
+
+        ListTile(
+          title: const Text('message'),
+          leading: const Icon(Icons.chat_bubble),
+          onTap: () {},
+        ),
+        ListTile(
+          title: const Text('message'),
+          leading: const Icon(Icons.chat_bubble),
+          onTap: () {},
+        ),
+        ListTile(
+          title: const Text('message'),
+          leading: const Icon(Icons.chat_bubble),
+          onTap: () {},
+        ),
+        ListTile(
+          title: const Text('message'),
+          leading: const Icon(Icons.chat_bubble),
+          onTap: () {},
         ),
       ]),
     );

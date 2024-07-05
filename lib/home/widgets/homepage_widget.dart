@@ -7,7 +7,7 @@ class TopCoverImage extends StatelessWidget {
   final Widget mainIcon;
   final Widget name;
 
-  const  TopCoverImage({
+  const TopCoverImage({
     super.key,
     required this.mainImage,
     required this.iconText,
@@ -73,7 +73,6 @@ class TopCoverImage extends StatelessWidget {
         ],
       ),
     );
-
   }
 }
 
@@ -131,20 +130,23 @@ class CoverImage extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       DefaultTextStyle.merge(
+                        maxLines: 1,
                         style: const TextStyle(
                           fontSize: 8,
                           fontFamily: 'sans-serif',
                         ),
                         child: title,
                       ),
-                    ],),
-
+                    ],
+                  ),
                   const SizedBox(height: 3),
                   DefaultTextStyle.merge(
+                    maxLines: 1,
                     style: const TextStyle(fontSize: 12),
                     child: bodytitle,
                   ),
                   DefaultTextStyle.merge(
+                    maxLines: 1,
                     style: const TextStyle(
                       fontSize: 10,
                       color: Colors.black,
@@ -155,8 +157,8 @@ class CoverImage extends StatelessWidget {
               ),
             ),
             icons,
-          ],),
-
+          ],
+        ),
       ]),
     );
   }

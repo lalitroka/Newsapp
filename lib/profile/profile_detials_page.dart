@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:practise/home/model/dataofuser.dart';
+import 'package:practise/api/modeldata.dart';
 
 class ProfileDetail extends StatefulWidget {
   const ProfileDetail({super.key});
@@ -15,7 +15,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final argumentData = ModalRoute.of(context)?.settings.arguments as User;
+    final argumentData = ModalRoute.of(context)?.settings.arguments as Articles;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(),
@@ -38,15 +38,13 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                   borderRadius: BorderRadius.circular(10),
                                   child: GestureDetector(
                                     onTap: () {
-                                      Navigator.of(context)
-                                          .pushNamed('/photopage',
-                                          arguments: argumentData.assetImage
-                        
-                                          );
+                                      Navigator.of(context).pushNamed(
+                                        '/photopage',
+                                        arguments: argumentData.urlToImage,
+                                      );
                                     },
-                                    child: Image(
-                                      image:
-                                          AssetImage(argumentData.assetImage),
+                                    child: Image.network(
+                                      argumentData.urlToImage ?? '',
                                       height: 150,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
@@ -76,7 +74,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
                               return Column(children: [
-                                Text(argumentData.bodytitle),
+                                Text(argumentData.title ?? ''),
                                 const SizedBox(
                                   height: 2,
                                 ),
@@ -88,12 +86,11 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                         onTap: () {
                                           Navigator.of(context).pushNamed(
                                             '/photopage',
-                                            arguments: argumentData.smallImage,
+                                            arguments: argumentData.urlToImage,
                                           );
                                         },
-                                        child: Image(
-                                          image: AssetImage(
-                                              argumentData.smallImage),
+                                        child: Image.network(
+                                          argumentData.urlToImage ?? '',
                                           height: 20,
                                           width: 20,
                                           fit: BoxFit.cover,
@@ -102,20 +99,17 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                     ),
                                     const SizedBox(width: 5),
                                     Text(
-                                      argumentData.title,
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      argumentData.subtitle,
+                                      argumentData.author ?? '',
                                       style: const TextStyle(
                                         fontSize: 10,
                                       ),
                                     ),
                                   ],
-                                )
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(argumentData.description ?? ''),
                               ]);
                             }),
                         const SizedBox(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class Photopage extends StatefulWidget {
   const Photopage({super.key});
 
@@ -10,18 +9,17 @@ class Photopage extends StatefulWidget {
 class _PhotopageState extends State<Photopage> {
   @override
   Widget build(BuildContext context) {
-    final photodata = ModalRoute.of(context)?.settings.arguments as String;
-    return  Scaffold(
+    final photoData = ModalRoute.of(context)?.settings.arguments as String;
+    return Scaffold(
       appBar: AppBar(),
       body: Padding(
-       padding: const  EdgeInsets.all(20),
-       child: SizedBox(
-         width: double.infinity,
-         height: double.infinity,
-         child:Image(image: AssetImage(photodata)),
-         
-       ),
-              ),
+        padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: Image.network((photoData)),
+        ),
+      ),
     );
   }
 }

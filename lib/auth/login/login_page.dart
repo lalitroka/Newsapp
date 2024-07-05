@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:practise/auth/sign_up/sign_up_page.dart';
 import 'package:practise/profile/profile_photopage.dart';
 
@@ -11,8 +10,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController phoneNumber = TextEditingController();
-  final TextEditingController password = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final _formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,98 +25,116 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(
-          left: 20,
-          right: 20,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 60),
-            TextField(
-              controller: phoneNumber,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: const InputDecoration(
-                labelText: 'Enter your Phone Number',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(250)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(250)),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Form(
+          key: _formkey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 60),
+              TextFormField(
+                controller: phoneNumberController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter Phone Number';
+                  }
+                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                    return 'Should only contain digits';
+                  } else if (value.length != 10) {
+                    return 'digit should be only 10 number';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Enter your Phone Number',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
                     borderSide: BorderSide(
                       width: 2,
                       color: Colors.blueGrey,
-                    )),
-                focusColor: Colors.amberAccent,
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            TextField(
-              controller: phoneNumber,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: const InputDecoration(
-                labelText: 'Enter your Password ',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(250)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(250)),
-                  borderSide: BorderSide(
-                    width: 2,
-                    color: Colors.blueGrey,
-                  ),
-                ),
-                focusColor: Colors.amberAccent,
-              ),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(
-                  '/home',
-                  // arguments: 'i am from login page',
-                );
-
-                // Navigator.of(context).push(
-                //     MaterialPageRoute(builder: (context) => const Homepage()));
-              },
-              child: const Text('signIn'),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Don't have an acount"),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const Register(),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    ' register ',
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
                     ),
                   ),
+                  focusColor: Colors.amberAccent,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const Photopage())
-                        );
-                  },
-                  child: const Text('button'),
-                )
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              TextFormField(
+                controller: passwordController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your password';
+                  } else if (!RegExp(r'^[A-Z]').hasMatch(value)) {
+                    return "Should start with a capital letter";
+                  } else if (!RegExp(r'[a-z]').hasMatch(value)) {
+                    return "Should contain at least one small letter";
+                  } else if (!RegExp(r'^(?=.*?[0-9])').hasMatch(value)) {
+                    return "Should contain at least one digit";
+                  } else if (!RegExp(r'^(?=.*?[!@#\$&*~])').hasMatch(value)) {
+                    return "Should contain at least one special character";
+                  } else if (value.length <= 8) {
+                    return "password should be at least 8 character";
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Enter your Password ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                    borderSide: BorderSide(
+                      width: 2,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                  focusColor: Colors.amberAccent,
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  if (_formkey.currentState!.validate()) {
+                    Navigator.of(context).pushNamed(
+                      '/home',
+                      // arguments: phoneNumberController.text,
+                    );
+                  }
+                },
+                child: const Text('Sign In'),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Don't have an account?"),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const Register(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      ' Register ',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
