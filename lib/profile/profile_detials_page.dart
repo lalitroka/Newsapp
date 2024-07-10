@@ -1,3 +1,5 @@
+import 'dart:ui';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:practise/api/modeldata.dart';
 
@@ -11,6 +13,30 @@ class _ProfileDetailState extends State<ProfileDetail> {
   @override
   void initState() {
     super.initState();
+    _loadCount();
+  }
+
+  late int likecount;
+  late int favoritecount;
+  late int commentcount;
+  late int sharecount;
+
+  Future<void> _storeCount() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setInt('likecount', likecount);
+    await pref.setInt('favoritecount', favoritecount);
+    await pref.setInt('commentcount', commentcount);
+    await pref.setInt('commentcount', sharecount);
+  }
+
+  Future<void> _loadCount() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      likecount = pref.getInt('likecount') ?? 100;
+      sharecount = pref.getInt('sharecount') ?? 100;
+      favoritecount = pref.getInt('favoritecount') ?? 100;
+      commentcount = pref.getInt('commentcount') ?? 100;
+    });
   }
 
   @override
@@ -18,7 +44,32 @@ class _ProfileDetailState extends State<ProfileDetail> {
     final argumentData = ModalRoute.of(context)?.settings.arguments as Articles;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey.shade200,
+              ),
+              child: const Icon(
+                Icons.more_horiz_outlined,
+                size: 20,
+              )),
+          const SizedBox(
+            width: 15,
+          ),
+        ],
+        title: const Center(
+          child: Text(
+            'Happy Reading',
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w100,
+            ),
+          ),
+        ),
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -29,7 +80,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                   Stack(
                     children: [
                       Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          padding: const EdgeInsets.only(left: 20, right: 20),
                           child: ListView.builder(
                               itemCount: 1,
                               shrinkWrap: true,
@@ -43,29 +94,37 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                         arguments: argumentData.urlToImage,
                                       );
                                     },
-                                    child: Image.network(
-                                      argumentData.urlToImage ?? '',
-                                      height: 150,
+                                    child: SizedBox(
+                                      height: 200,
                                       width: double.infinity,
-                                      fit: BoxFit.cover,
+                                      child: Image.network(
+                                        argumentData.urlToImage ?? '',
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 );
                               })),
                       Positioned(
-                        right: 10,
+                        top: 10,
+                        right: 25,
                         child: TextButton(
                           onPressed: () {},
                           style: TextButton.styleFrom(
-                              backgroundColor: Colors.white70),
-                          child: const Text('Environment'),
+                            backgroundColor: Colors.grey.shade200,
+                          ),
+                          child: const Text(
+                            'Environment',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 240, 107, 98)),
+                          ),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 7),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    padding: const EdgeInsets.only(left: 20, right: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -74,7 +133,12 @@ class _ProfileDetailState extends State<ProfileDetail> {
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
                               return Column(children: [
-                                Text(argumentData.title ?? ''),
+                                Text(
+                                  argumentData.title ?? '',
+                                  style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
                                 const SizedBox(
                                   height: 2,
                                 ),
@@ -101,15 +165,28 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                     Text(
                                       argumentData.author ?? '',
                                       style: const TextStyle(
-                                        fontSize: 10,
-                                      ),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600),
                                     ),
+                                    const SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(
+                                      argumentData.publishedAt ?? '',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    )
                                   ],
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Text(argumentData.description ?? ''),
+                                Text(
+                                  argumentData.description ?? '',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                ),
                               ]);
                             }),
                         const SizedBox(
@@ -124,26 +201,129 @@ class _ProfileDetailState extends State<ProfileDetail> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 50, right: 50, bottom: 10),
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
-                color: const Color.fromARGB(58, 227, 215, 215),
+                color: const Color.fromARGB(255, 241, 237, 237),
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: 1,
-                  ),
-                  Icon(Icons.heat_pump_rounded),
-                  Icon(Icons.comment_bank_outlined),
-                  Icon(Icons.favorite_border_outlined),
-                  Icon(Icons.share_outlined),
-                  SizedBox(
-                    width: 1,
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _storeCount();
+                        setState(() {
+                          likecount++;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(microseconds: 20),
+                        width: 70,
+                        height: 45,
+                        padding: const EdgeInsets.all(15.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          color: Colors.white,
+                        ),
+                        child: Row(children: [
+                          const Icon(
+                            Icons.favorite_border_outlined,
+                            size: 15,
+                          ),
+                          Text(
+                            '$likecount',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ]),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _storeCount();
+                          favoritecount++;
+                        });
+                      },
+                      child: Container(
+                        width: 70,
+                        height: 45,
+                        padding: const EdgeInsets.all(15.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          color: Colors.white,
+                        ),
+                        child: Row(children: [
+                          const Icon(
+                            Icons.bookmark,
+                            size: 15,
+                          ),
+                          Text(
+                            '$favoritecount',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ]),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _storeCount();
+                        setState(() {
+                          commentcount++;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(),
+                        width: 70,
+                        height: 45,
+                        padding: const EdgeInsets.all(15.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          color: Colors.white,
+                        ),
+                        child: Row(children: [
+                          const Icon(
+                            Icons.comment_bank_outlined,
+                            size: 15,
+                          ),
+                          Text(
+                            '$commentcount',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ]),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _storeCount();
+                        setState(() {
+                          sharecount++;
+                        });
+                      },
+                      child: Container(
+                        width: 75,
+                        height: 45,
+                        padding: const EdgeInsets.all(15.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          color: Colors.white,
+                        ),
+                        child: Row(children: [
+                          const Icon(
+                            Icons.share,
+                            size: 15,
+                          ),
+                          Text(
+                            '$sharecount',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ]),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

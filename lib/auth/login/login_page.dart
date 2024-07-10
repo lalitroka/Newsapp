@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:practise/auth/sign_up/sign_up_page.dart';
-import 'package:practise/profile/profile_photopage.dart';
+import 'package:practise/home/page/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,6 +40,9 @@ class _LoginPageState extends State<LoginPage> {
                   }
                   if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                     return 'Should only contain digits';
+                  } else if (!value.startsWith('97') &&
+                      !value.startsWith('98')) {
+                    return 'Phone number should start with 97 or 98';
                   } else if (value.length != 10) {
                     return 'digit should be only 10 number';
                   }
@@ -103,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: () {
                   if (_formkey.currentState!.validate()) {
-                    Navigator.of(context).pushNamed(
+                    Navigator.of(context).pushReplacementNamed(
                       '/home',
                       // arguments: phoneNumberController.text,
                     );
@@ -118,9 +120,9 @@ class _LoginPageState extends State<LoginPage> {
                   const Text("Don't have an account?"),
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => const Register(),
+                          builder: (context) => const Homepage(),
                         ),
                       );
                     },
