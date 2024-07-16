@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CoverImage extends StatelessWidget {
+
   final Widget title;
   final Widget bodytitle;
   final Widget subtitle;
@@ -16,6 +17,7 @@ class CoverImage extends StatelessWidget {
     required this.smallImage,
     required this.assetImage,
     required this.icons,
+
   });
 
   @override

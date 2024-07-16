@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:practise/api/modeldata.dart';
@@ -21,12 +20,14 @@ class _ProfileDetailState extends State<ProfileDetail> {
   late int commentcount;
   late int sharecount;
 
+  // NewsModel? model;
+
   Future<void> _storeCount() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setInt('likecount', likecount);
     await pref.setInt('favoritecount', favoritecount);
     await pref.setInt('commentcount', commentcount);
-    await pref.setInt('commentcount', sharecount);
+    await pref.setInt('sharecount', sharecount);
   }
 
   Future<void> _loadCount() async {
@@ -46,16 +47,10 @@ class _ProfileDetailState extends State<ProfileDetail> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         actions: [
-          Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey.shade200,
-              ),
-              child: const Icon(
-                Icons.more_horiz_outlined,
-                size: 20,
-              )),
+          GestureDetector(
+            onTap: () {},
+            child: const Text('Saved'),
+          ),
           const SizedBox(
             width: 15,
           ),
@@ -166,6 +161,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                       argumentData.author ?? '',
                                       style: const TextStyle(
                                           fontSize: 12,
+                                          // overflow: TextOverflow.ellipsis,
                                           fontWeight: FontWeight.w600),
                                     ),
                                     const SizedBox(
@@ -174,6 +170,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                                     Text(
                                       argumentData.publishedAt ?? '',
                                       style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
                                         fontSize: 12,
                                       ),
                                     )
@@ -200,6 +197,9 @@ class _ProfileDetailState extends State<ProfileDetail> {
               ),
             ),
           ),
+
+          // footer
+
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
             child: Container(

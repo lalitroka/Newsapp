@@ -9,8 +9,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController phoneNumberController =
+      TextEditingController(text: "9899999999");
+  final TextEditingController passwordController =
+      TextEditingController(text: "Test@12345");
   final _formkey = GlobalKey<FormState>();
 
   @override

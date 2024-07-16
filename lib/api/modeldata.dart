@@ -1,20 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<List<Articles>?> fetchNews() async {
-  final response = await http.get(Uri.parse(
-      'https://saurav.tech/NewsAPI/top-headlines/category/health/in.json'));
-  if (response.statusCode == 200) {
-    final jsondecodevalue = jsonDecode(response.body);
-    List articleslist = jsondecodevalue['articles'];
-    List<Articles> articlesDataList = articleslist
-        .map(
-          (e) => Articles.fromJson(e),
-        )
-        .toList();
-    return articlesDataList;
-  } else {
-    throw Exception('Failed to load news');
+class Api {
+  Future<List<Articles>?> fetchNews() async {
+    final response = await http.get(Uri.parse(
+        'https://saurav.tech/NewsAPI/top-headlines/category/health/in.json'));
+    if (response.statusCode == 200) {
+      final jsondecodevalue = jsonDecode(response.body);
+      List articleslist = jsondecodevalue['articles'];
+      List<Articles> articlesDataList = articleslist
+          .map(
+            (e) => Articles.fromJson(e),
+          )
+          .toList();
+      return articlesDataList;
+    } else {
+      throw Exception('Failed to load news');
+    }
   }
 }
 
@@ -68,8 +70,7 @@ class Articles {
       this.content});
 
   Articles.fromJson(Map<String, dynamic> json) {
-    source =
-        json['source'] != null ?  Source.fromJson(json['source']) : null;
+    source = json['source'] != null ? Source.fromJson(json['source']) : null;
     author = json['author'];
     title = json['title'];
     description = json['description'];
@@ -78,8 +79,6 @@ class Articles {
     publishedAt = json['publishedAt'];
     content = json['content'];
   }
-
-  
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

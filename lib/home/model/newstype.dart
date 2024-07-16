@@ -6,7 +6,7 @@ class NewsType {
   );
 }
 
-List<NewsType> Newstype = <NewsType>[
+List<NewsType> newstype = <NewsType>[
   NewsType('Health'),
   NewsType('Enviroment'),
   NewsType('Politics'),
