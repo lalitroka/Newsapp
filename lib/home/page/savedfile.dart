@@ -5,6 +5,7 @@ import 'package:practise/service/database/database_service.dart';
 import 'package:practise/service/provider/news_provider.dart';
 import 'package:provider/provider.dart';
 
+
 class Savedfile extends StatefulWidget {
   const Savedfile({super.key});
 
@@ -20,17 +21,21 @@ class _SavedfileState extends State<Savedfile> {
       appBar: AppBar(),
       body: Column(
         children: [
-          BookmarkWidget(ispressed: context.watch<NewsProvider>().isButtonPressed ,
-           onpressed: context.read<NewsProvider>().isBookMarked),
+         
+           BookmarkWidget(
+              ispressed: context.watch<NewsProvider>().isButtonPressed,
+             onpressed: context.read<NewsProvider>().isBooMarked,
+           ),
 
           Flexible(
             child: FutureBuilder(
                 future: _databaseService.getNews(),
                 builder: (context, snapshot) {
                   return ListView.separated(
+                    scrollDirection: Axis.vertical,
                     separatorBuilder: (context, index) {
                       return const SizedBox(
-                        height: 2,
+                        height: 5,
                       );
                     },
                     shrinkWrap: true,
@@ -38,18 +43,25 @@ class _SavedfileState extends State<Savedfile> {
                     itemBuilder: (context, index) {
                       final article = snapshot.data![index];
                       return ListTile(
-                        title: Text(article.title ?? 'No title'),
-                        subtitle: Text(article.author ?? 'No author'),
-                        leading: CachedNetworkImage(
-                          imageUrl: article.urlToImage ?? 'images/jungle.png',
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                        title: Text(article.title ?? 'No title',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         ),
-                        trailing: CachedNetworkImage(
-                          imageUrl: article.urlToImage ?? 'images/jungle.png',
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                        subtitle: Text(article.author ?? 'No author',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         ),
+                        leading: Container(
+                                decoration: const  BoxDecoration(
+                                  shape: BoxShape.circle, 
+                                ),
+                          child: CachedNetworkImage(
+                            imageUrl: article.urlToImage ?? 'images/jungle.png',
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
+                        ),
+                      
                       );
                     },
                   );

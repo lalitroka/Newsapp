@@ -15,7 +15,7 @@ class Api {
           .toList();
       return articlesDataList;
     } else {
-      throw Exception('Failed to load news');
+      throw Exception('Failed to load news'); 
     }
   }
 }
@@ -58,6 +58,7 @@ class Articles {
   String? urlToImage;
   String? publishedAt;
   String? content;
+
 
   Articles(Articles? data,
       {this.source,

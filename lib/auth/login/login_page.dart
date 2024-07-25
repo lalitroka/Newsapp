@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:practise/home/page/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,6 +16,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController =
       TextEditingController(text: "Test@12345");
   final _formkey = GlobalKey<FormState>();
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -137,10 +141,40 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
+              Center(
+                child: MaterialButton(
+                  onPressed: () async {
+                    final UserCredential userCredential =
+                        await signInWithGoogle();
+                    if (userCredential.credential!.accessToken != null) {
+                      Navigator.pushNamed(context, '/home',
+                      arguments: userCredential.user
+                      );
+                    }
+                  },
+                  child: const Text('SignIn with Google'),
+                ),
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      print("exception $e");
+      throw Exception();
+    }
   }
 }

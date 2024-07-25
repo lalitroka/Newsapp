@@ -4,14 +4,14 @@ import 'dart:developer';
 import 'package:practise/service/firebase/local_notification.dart';
 
 class PushNotification {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
 
   Future<String> getFcmToken() async {
     // Request notification permissions
-    await _firebaseMessaging.requestPermission();
+    await firebaseMessaging.requestPermission();
 
     // Get the FCM token
-    final fcmToken = await _firebaseMessaging.getToken();
+    final fcmToken = await firebaseMessaging.getToken();
     log('FCM Token: $fcmToken');
     return fcmToken ?? "N/A";
   }

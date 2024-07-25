@@ -9,6 +9,8 @@ class ProfileDetail extends StatefulWidget {
 }
 
 class _ProfileDetailState extends State<ProfileDetail> {
+
+  
   @override
   void initState() {
     super.initState();
@@ -19,6 +21,8 @@ class _ProfileDetailState extends State<ProfileDetail> {
   late int favoritecount;
   late int commentcount;
   late int sharecount;
+  
+  
 
   // NewsModel? model;
 
@@ -322,6 +326,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         ]),
                       ),
                     ),
+
                   ],
                 ),
               ),
